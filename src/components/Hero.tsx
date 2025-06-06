@@ -1,5 +1,5 @@
 
-import { Phone, Mail, Building } from "lucide-react";
+import { Phone, Mail, Building, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
@@ -46,8 +46,9 @@ const Hero = () => {
               <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white hover:scale-110 transition-all duration-300 hover:shadow-lg">
                 Get Quote Now
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-900 hover:scale-110 transition-all duration-300">
-                View Products
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-900 hover:scale-110 transition-all duration-300 group">
+                <span>View Products</span>
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Button>
             </div>
           </div>

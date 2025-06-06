@@ -9,8 +9,14 @@ const Products = () => {
     {
       title: "TMT Steel Bars",
       description: "High-grade TMT bars for superior strength and durability in construction projects.",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop",
+      image: "/lovable-uploads/54a7d21e-ad77-4ae4-88b4-29a94c2a7be7.png",
       features: ["Fe 500 Grade", "Corrosion Resistant", "Earthquake Safe"]
+    },
+    {
+      title: "MS Angles & Plates",
+      description: "Structural steel components for framework and reinforcement applications.",
+      image: "/lovable-uploads/f57dcc97-b11a-47d1-b40d-1b36c1df7a21.png",
+      features: ["Various Sizes", "IS Standard", "Custom Cutting"]
     },
     {
       title: "Cement & Concrete",
@@ -29,12 +35,6 @@ const Products = () => {
       description: "Complete roofing solutions including sheets, tiles, and accessories.",
       image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?w=400&h=300&fit=crop",
       features: ["Metal Sheets", "Clay Tiles", "Accessories"]
-    },
-    {
-      title: "MS Angles & Plates",
-      description: "Structural steel components for framework and reinforcement applications.",
-      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?w=400&h=300&fit=crop",
-      features: ["Various Sizes", "IS Standard", "Custom Cutting"]
     },
     {
       title: "Hardware & Tools",

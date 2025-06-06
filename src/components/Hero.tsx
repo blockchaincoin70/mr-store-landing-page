@@ -1,8 +1,11 @@
-
 import { Phone, Mail, Building, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => {
+  const handleCallNow = () => {
+    window.location.href = "tel:+918638713719";
+  };
+
   return (
     <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20 relative overflow-hidden">
       {/* Animated background elements */}
@@ -43,10 +46,15 @@ const Hero = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in" style={{ animationDelay: '1.1s' }}>
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white hover:scale-110 transition-all duration-300 hover:shadow-lg">
-                Get Quote Now
+              <Button 
+                size="lg" 
+                className="bg-orange-500 hover:bg-orange-600 text-white hover:scale-110 transition-all duration-300 hover:shadow-lg"
+                onClick={handleCallNow}
+              >
+                <Phone className="mr-2 h-4 w-4" />
+                Call Now
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-900 hover:scale-110 transition-all duration-300 group">
+              <Button size="lg" variant="outline" className="border-white text-white bg-transparent hover:bg-white hover:text-slate-900 hover:scale-110 transition-all duration-300 group">
                 <span>View Products</span>
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </Button>

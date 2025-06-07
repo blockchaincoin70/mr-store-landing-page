@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   const handleCallNow = () => {
-    window.location.href = "tel:+918638713719";
+    window.location.href = "tel:+918638757425";
   };
 
   return (
@@ -35,7 +35,7 @@ const Hero = () => {
               <div className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300">
                 <Phone className="h-5 w-5 text-orange-400 animate-pulse" />
                 <div>
-                  <div className="font-semibold">+91 86387 13719</div>
+                  <div className="font-semibold">+91 86387 57425</div>
                   <div className="text-slate-400">+91 96786 53088</div>
                 </div>
               </div>
@@ -61,6 +61,7 @@ const Hero = () => {
             </div>
           </div>
           
+          {/* Statistics Section */}
           <div className="relative animate-scale-in" style={{ animationDelay: '0.5s' }}>
             <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105">
               <div className="grid grid-cols-2 gap-4">

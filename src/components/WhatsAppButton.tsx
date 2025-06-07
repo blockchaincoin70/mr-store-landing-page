@@ -1,6 +1,6 @@
 
 const WhatsAppButton = () => {
-  const phoneNumber = "919638713719"; // Remove + and spaces for WhatsApp URL
+  const phoneNumber = "918638757425"; // Remove + and spaces for WhatsApp URL
   const message = "Hello! I'm interested in your building materials. Can you help me?";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

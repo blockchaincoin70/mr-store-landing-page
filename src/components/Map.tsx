@@ -15,7 +15,7 @@ const Map = () => {
         <div className="max-w-4xl mx-auto">
           <div className="relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-500">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3570.123456789!2d91.7635072!3d26.1619712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjbCsDA5JzQzLjEiTiA5McKwNDUnNDguNiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3570.123456789!2d94.1157911!3d27.2537697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDE1JzEzLjYiTiA5NMKwMDYnNTYuOCJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
               width="100%"
               height="400"
               style={{ border: 0 }}
@@ -32,8 +32,8 @@ const Map = () => {
             <div className="bg-slate-50 p-6 rounded-xl hover:bg-slate-100 transition-colors duration-300">
               <h3 className="font-semibold text-slate-900 mb-2">Store Address</h3>
               <p className="text-slate-600">
-                Latitude: 26.1619712<br />
-                Longitude: 91.7635072
+                Latitude: 27.2537697<br />
+                Longitude: 94.1157911
               </p>
             </div>
             <div className="bg-slate-50 p-6 rounded-xl hover:bg-slate-100 transition-colors duration-300">

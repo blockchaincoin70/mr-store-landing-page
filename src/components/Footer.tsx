@@ -1,4 +1,3 @@
-
 import { Phone, Mail, Building } from "lucide-react";
 
 const Footer = () => {
@@ -15,7 +14,7 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-orange-400" />
-                <span className="text-sm">+91 86387 13719</span>
+                <span className="text-sm">+91 86387 57425</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-orange-400" />

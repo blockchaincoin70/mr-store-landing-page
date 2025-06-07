@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Phone, Mail, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -53,8 +52,7 @@ const Contact = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="text-lg font-semibold text-orange-400">+91 86387 13719</div>
-                  <div className="text-lg font-semibold text-orange-400">+91 96786 53088</div>
+                  <div className="text-lg font-semibold text-orange-400">+91 86387 57425</div>
                   <p className="text-slate-300">Available 7 days a week, 8 AM - 8 PM</p>
                 </div>
               </CardContent>

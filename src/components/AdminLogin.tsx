@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface AdminLoginProps {
@@ -21,53 +20,37 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      // Check if user exists and has admin role
-      const { data: user, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', email)
-        .eq('role', 'admin')
-        .single();
+    // Hardcoded admin credentials
+    const ADMIN_EMAIL = 'admin@mrstore.com';
+    const ADMIN_PASSWORD = 'admin123';
 
-      if (error || !user) {
-        toast({
-          title: "Login Failed",
-          description: "Invalid admin credentials",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
-      // For demo purposes, check against the default password "admin123"
-      // In production, you'd use proper password hashing (bcrypt, etc.)
-      if (password !== 'admin123') {
-        toast({
-          title: "Login Failed",
-          description: "Invalid password",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
+    // Check credentials directly
+    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
       toast({
-        title: "Login Successful",
-        description: "Welcome to the admin panel",
-      });
-      
-      onLogin(user);
-    } catch (error) {
-      console.error('Login error:', error);
-      toast({
-        title: "Error",
-        description: "Something went wrong",
+        title: "Login Failed",
+        description: "Invalid admin credentials",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
+      return;
     }
+
+    // Create mock admin user object
+    const adminUser = {
+      id: 'admin-1',
+      email: ADMIN_EMAIL,
+      first_name: 'Admin',
+      last_name: 'User',
+      role: 'admin'
+    };
+
+    toast({
+      title: "Login Successful",
+      description: "Welcome to the admin panel",
+    });
+    
+    onLogin(adminUser);
+    setLoading(false);
   };
 
   return (

@@ -22,8 +22,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
     setLoading(true);
 
     try {
-      // For demo purposes, we'll use a simple check
-      // In production, you'd implement proper password hashing
+      // Check if user exists and has admin role
       const { data: user, error } = await supabase
         .from('users')
         .select('*')
@@ -37,6 +36,19 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
           description: "Invalid admin credentials",
           variant: "destructive",
         });
+        setLoading(false);
+        return;
+      }
+
+      // For demo purposes, check against the default password "admin123"
+      // In production, you'd use proper password hashing (bcrypt, etc.)
+      if (password !== 'admin123') {
+        toast({
+          title: "Login Failed",
+          description: "Invalid password",
+          variant: "destructive",
+        });
+        setLoading(false);
         return;
       }
 
@@ -47,6 +59,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
       
       onLogin(user);
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
         description: "Something went wrong",
@@ -85,7 +98,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin password"
+                placeholder="admin123"
                 required
               />
             </div>
@@ -96,6 +109,11 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
             >
               {loading ? 'Logging in...' : 'Login to Admin Panel'}
             </Button>
+            <div className="text-sm text-center text-slate-600 mt-4">
+              <p>Demo Credentials:</p>
+              <p>Email: admin@mrstore.com</p>
+              <p>Password: admin123</p>
+            </div>
           </form>
         </CardContent>
       </Card>

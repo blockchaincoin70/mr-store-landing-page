@@ -9,6 +9,75 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      products: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          name: string
+          tag1: string | null
+          tag2: string | null
+          tag3: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          name: string
+          tag1?: string | null
+          tag2?: string | null
+          tag3?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          tag1?: string | null
+          tag2?: string | null
+          tag3?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          customer_name: string
+          id: string
+          project: string | null
+          rating: number
+          review_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          customer_name: string
+          id?: string
+          project?: string | null
+          rating: number
+          review_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          customer_name?: string
+          id?: string
+          project?: string | null
+          rating?: number
+          review_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content: Json

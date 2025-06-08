@@ -1,12 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Settings, FileText, Image } from 'lucide-react';
-import ContentManager from './ContentManager';
-import ImageManager from './ImageManager';
-import { supabase } from '@/integrations/supabase/client';
+import { LogOut, Settings, Package, MessageSquare } from 'lucide-react';
+import ProductManager from './ProductManager';
+import ReviewManager from './ReviewManager';
 
 interface AdminPanelProps {
   user: any;
@@ -14,7 +12,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
-  const [activeTab, setActiveTab] = useState('content');
+  const [activeTab, setActiveTab] = useState('products');
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -49,22 +47,22 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="content" className="flex items-center space-x-2">
-              <FileText className="h-4 w-4" />
-              <span>Content Management</span>
+            <TabsTrigger value="products" className="flex items-center space-x-2">
+              <Package className="h-4 w-4" />
+              <span>Product Management</span>
             </TabsTrigger>
-            <TabsTrigger value="images" className="flex items-center space-x-2">
-              <Image className="h-4 w-4" />
-              <span>Image Management</span>
+            <TabsTrigger value="reviews" className="flex items-center space-x-2">
+              <MessageSquare className="h-4 w-4" />
+              <span>Review Management</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="content">
-            <ContentManager userId={user.id} />
+          <TabsContent value="products">
+            <ProductManager />
           </TabsContent>
 
-          <TabsContent value="images">
-            <ImageManager userId={user.id} />
+          <TabsContent value="reviews">
+            <ReviewManager />
           </TabsContent>
         </Tabs>
       </main>

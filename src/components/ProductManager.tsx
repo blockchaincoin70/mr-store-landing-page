@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Pencil, Trash2, Plus } from 'lucide-react';
+import { Pencil, Trash2, Plus, Upload, X } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -25,6 +25,9 @@ const ProductManager = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -61,15 +64,117 @@ const ProductManager = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Error",
+          description: "Please select a valid image file",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "Image must be less than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSelectedFile(file);
+      
+      // Create preview URL
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
+
+  const uploadImage = async (): Promise<string | null> => {
+    if (!selectedFile) return null;
+
+    setIsUploading(true);
+    try {
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `products/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl: string) => {
+    try {
+      // Extract file path from URL
+      const urlParts = imageUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `products/${fileName}`;
+
+      await supabase.storage
+        .from('product-images')
+        .remove([filePath]);
+    } catch (error) {
+      console.error('Error deleting old image:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      let imageUrl = formData.image_url;
+
+      // Upload new image if selected
+      if (selectedFile) {
+        const uploadedUrl = await uploadImage();
+        if (uploadedUrl) {
+          imageUrl = uploadedUrl;
+          
+          // Delete old image if updating a product
+          if (editingProduct && editingProduct.image_url) {
+            await deleteOldImage(editingProduct.image_url);
+          }
+        } else {
+          throw new Error('Image upload failed');
+        }
+      }
+
+      const productData = {
+        ...formData,
+        image_url: imageUrl
+      };
+
       if (editingProduct) {
         const { error } = await supabase
           .from('products')
-          .update(formData)
+          .update(productData)
           .eq('id', editingProduct.id);
 
         if (error) throw error;
@@ -80,7 +185,7 @@ const ProductManager = () => {
       } else {
         const { error } = await supabase
           .from('products')
-          .insert([formData]);
+          .insert([productData]);
 
         if (error) throw error;
         toast({
@@ -113,6 +218,8 @@ const ProductManager = () => {
       tag2: product.tag2 || '',
       tag3: product.tag3 || ''
     });
+    setPreviewUrl(product.image_url || '');
+    setSelectedFile(null);
     setIsFormOpen(true);
   };
 
@@ -120,12 +227,21 @@ const ProductManager = () => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
+      // Find the product to get its image URL
+      const product = products.find(p => p.id === id);
+      
       const { error } = await supabase
         .from('products')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
+
+      // Delete the associated image
+      if (product?.image_url) {
+        await deleteOldImage(product.image_url);
+      }
+
       toast({
         title: "Success",
         description: "Product deleted successfully",
@@ -152,6 +268,22 @@ const ProductManager = () => {
     });
     setEditingProduct(null);
     setIsFormOpen(false);
+    setSelectedFile(null);
+    setPreviewUrl('');
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+  };
+
+  const clearImage = () => {
+    setSelectedFile(null);
+    if (previewUrl && previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setPreviewUrl('');
+    if (!editingProduct) {
+      setFormData({ ...formData, image_url: '' });
+    }
   };
 
   if (isLoading && products.length === 0) {
@@ -198,13 +330,40 @@ const ProductManager = () => {
               </div>
 
               <div>
-                <Label htmlFor="image_url">Image URL</Label>
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <Label>Product Image</Label>
+                <div className="space-y-4">
+                  {previewUrl && (
+                    <div className="relative inline-block">
+                      <img 
+                        src={previewUrl} 
+                        alt="Preview" 
+                        className="w-32 h-32 object-cover rounded-lg border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                        onClick={clearImage}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="flex-1"
+                    />
+                    <Upload className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Supported formats: JPEG, PNG, WebP, GIF. Max size: 5MB
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -238,8 +397,8 @@ const ProductManager = () => {
               </div>
 
               <div className="flex space-x-2">
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? 'Saving...' : editingProduct ? 'Update Product' : 'Add Product'}
+                <Button type="submit" disabled={isLoading || isUploading}>
+                  {isLoading || isUploading ? 'Saving...' : editingProduct ? 'Update Product' : 'Add Product'}
                 </Button>
                 <Button type="button" variant="outline" onClick={resetForm}>
                   Cancel
@@ -261,6 +420,7 @@ const ProductManager = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Tags</TableHead>
@@ -270,6 +430,19 @@ const ProductManager = () => {
               <TableBody>
                 {products.map((product) => (
                   <TableRow key={product.id}>
+                    <TableCell>
+                      {product.image_url ? (
+                        <img 
+                          src={product.image_url} 
+                          alt={product.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-slate-200 rounded flex items-center justify-center text-slate-400 text-xs">
+                          No Image
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell className="max-w-xs truncate">{product.description}</TableCell>
                     <TableCell>

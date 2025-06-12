@@ -1,13 +1,48 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Package, MessageSquare, TrendingUp, Users } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 const AdminDashboard = () => {
+  const [totalViews, setTotalViews] = useState(0);
+
+  // Set up real-time subscription for page views
+  useEffect(() => {
+    const fetchInitialViews = async () => {
+      const { count } = await supabase
+        .from('page_views')
+        .select('*', { count: 'exact', head: true });
+      setTotalViews(count || 0);
+    };
+
+    fetchInitialViews();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('page_views_realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'page_views'
+        },
+        () => {
+          // Increment the count when a new view is added
+          setTotalViews(prev => prev + 1);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
@@ -48,8 +83,7 @@ const AdminDashboard = () => {
         averageRating: Number(avgRating.toFixed(1)),
         recentProducts,
         recentReviews,
-        ratingDistribution,
-        totalViews: 1247 // Mock data - you can implement actual view tracking later
+        ratingDistribution
       };
     }
   });
@@ -90,8 +124,8 @@ const AdminDashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalViews.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Website page views</p>
+            <div className="text-2xl font-bold">{totalViews.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Real-time website views</p>
           </CardContent>
         </Card>
 
@@ -163,7 +197,7 @@ const AdminDashboard = () => {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Website Performance</span>
-              <span className="text-sm text-muted-foreground">Good</span>
+              <span className="text-sm text-muted-foreground">Real-time tracking</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Content Freshness</span>

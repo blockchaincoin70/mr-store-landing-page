@@ -7,8 +7,11 @@ import Contact from "@/components/Contact";
 import Map from "@/components/Map";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { useViewTracking } from "@/hooks/useViewTracking";
 
 const Index = () => {
+  useViewTracking('/');
+
   return (
     <div className="min-h-screen bg-background">
       <Header />

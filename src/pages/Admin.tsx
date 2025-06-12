@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import AdminLogin from '@/components/AdminLogin';
 import AdminPanel from '@/components/AdminPanel';
+import { useViewTracking } from '@/hooks/useViewTracking';
 
 const Admin = () => {
   const [user, setUser] = useState<any>(null);
+  
+  useViewTracking('/admin');
 
   const handleLogin = (userData: any) => {
     setUser(userData);

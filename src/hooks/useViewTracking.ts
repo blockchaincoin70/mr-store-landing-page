@@ -4,6 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const useViewTracking = (pagePath: string) => {
   useEffect(() => {
+    // Don't track admin pages or login pages
+    if (pagePath.includes('/admin') || pagePath.includes('/login')) {
+      return;
+    }
+
     const trackView = async () => {
       try {
         const { error } = await supabase

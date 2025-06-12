@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Settings, Package, MessageSquare } from 'lucide-react';
+import { LogOut, Settings, Package, MessageSquare, BarChart3 } from 'lucide-react';
 import ProductManager from './ProductManager';
 import ReviewManager from './ReviewManager';
+import AdminDashboard from './AdminDashboard';
 
 interface AdminPanelProps {
   user: any;
@@ -12,7 +13,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -46,7 +47,11 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="dashboard" className="flex items-center space-x-2">
+              <BarChart3 className="h-4 w-4" />
+              <span>Dashboard</span>
+            </TabsTrigger>
             <TabsTrigger value="products" className="flex items-center space-x-2">
               <Package className="h-4 w-4" />
               <span>Product Management</span>
@@ -56,6 +61,10 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
               <span>Review Management</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="dashboard">
+            <AdminDashboard />
+          </TabsContent>
 
           <TabsContent value="products">
             <ProductManager />

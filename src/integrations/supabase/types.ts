@@ -36,6 +36,47 @@ export type Database = {
         }
         Relationships: []
       }
+      product_inventory: {
+        Row: {
+          cost_price: number | null
+          created_at: string
+          id: string
+          product_id: string
+          reorder_level: number | null
+          selling_price: number
+          stock_quantity: number
+          updated_at: string
+        }
+        Insert: {
+          cost_price?: number | null
+          created_at?: string
+          id?: string
+          product_id: string
+          reorder_level?: number | null
+          selling_price: number
+          stock_quantity?: number
+          updated_at?: string
+        }
+        Update: {
+          cost_price?: number | null
+          created_at?: string
+          id?: string
+          product_id?: string
+          reorder_level?: number | null
+          selling_price?: number
+          stock_quantity?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_inventory_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           created_at: string
@@ -104,6 +145,95 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sales_items: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          quantity: number
+          total_price: number
+          transaction_id: string
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          quantity: number
+          total_price: number
+          transaction_id: string
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          total_price?: number
+          transaction_id?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "sales_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_transactions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          notes: string | null
+          payment_method: string
+          total_amount: number
+          transaction_number: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          payment_method?: string
+          total_amount: number
+          transaction_number: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          payment_method?: string
+          total_amount?: number
+          transaction_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_transactions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_content: {
         Row: {
@@ -216,7 +346,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_transaction_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

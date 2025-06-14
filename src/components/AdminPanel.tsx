@@ -2,11 +2,14 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Settings, Package, MessageSquare, BarChart3, Menu } from 'lucide-react';
+import { LogOut, Settings, Package, MessageSquare, BarChart3, Menu, ShoppingCart, Warehouse, Receipt } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import ProductManager from './ProductManager';
 import ReviewManager from './ReviewManager';
 import AdminDashboard from './AdminDashboard';
+import POSSystem from './POSSystem';
+import InventoryManager from './InventoryManager';
+import SalesHistory from './SalesHistory';
 
 interface AdminPanelProps {
   user: any;
@@ -17,19 +20,34 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   const NavigationTabs = () => (
-    <TabsList className="grid w-full grid-cols-3 h-auto gap-1">
-      <TabsTrigger value="dashboard" className="flex flex-col items-center space-y-1 p-3 text-xs">
-        <BarChart3 className="h-4 w-4" />
+    <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 h-auto gap-1">
+      <TabsTrigger value="dashboard" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
+        <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
         <span className="hidden sm:inline">Dashboard</span>
         <span className="sm:hidden">Stats</span>
       </TabsTrigger>
-      <TabsTrigger value="products" className="flex flex-col items-center space-y-1 p-3 text-xs">
-        <Package className="h-4 w-4" />
+      <TabsTrigger value="pos" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
+        <ShoppingCart className="h-3 w-3 md:h-4 md:w-4" />
+        <span className="hidden sm:inline">POS</span>
+        <span className="sm:hidden">POS</span>
+      </TabsTrigger>
+      <TabsTrigger value="inventory" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
+        <Warehouse className="h-3 w-3 md:h-4 md:w-4" />
+        <span className="hidden sm:inline">Inventory</span>
+        <span className="sm:hidden">Stock</span>
+      </TabsTrigger>
+      <TabsTrigger value="sales" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
+        <Receipt className="h-3 w-3 md:h-4 md:w-4" />
+        <span className="hidden sm:inline">Sales</span>
+        <span className="sm:hidden">Sales</span>
+      </TabsTrigger>
+      <TabsTrigger value="products" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
+        <Package className="h-3 w-3 md:h-4 md:w-4" />
         <span className="hidden sm:inline">Products</span>
         <span className="sm:hidden">Items</span>
       </TabsTrigger>
-      <TabsTrigger value="reviews" className="flex flex-col items-center space-y-1 p-3 text-xs">
-        <MessageSquare className="h-4 w-4" />
+      <TabsTrigger value="reviews" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
+        <MessageSquare className="h-3 w-3 md:h-4 md:w-4" />
         <span className="hidden sm:inline">Reviews</span>
         <span className="sm:hidden">Reviews</span>
       </TabsTrigger>
@@ -61,6 +79,30 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
             >
               <BarChart3 className="h-4 w-4 mr-2" />
               Dashboard
+            </Button>
+            <Button
+              variant={activeTab === 'pos' ? 'default' : 'ghost'}
+              className="w-full justify-start"
+              onClick={() => setActiveTab('pos')}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              POS System
+            </Button>
+            <Button
+              variant={activeTab === 'inventory' ? 'default' : 'ghost'}
+              className="w-full justify-start"
+              onClick={() => setActiveTab('inventory')}
+            >
+              <Warehouse className="h-4 w-4 mr-2" />
+              Inventory
+            </Button>
+            <Button
+              variant={activeTab === 'sales' ? 'default' : 'ghost'}
+              className="w-full justify-start"
+              onClick={() => setActiveTab('sales')}
+            >
+              <Receipt className="h-4 w-4 mr-2" />
+              Sales History
             </Button>
             <Button
               variant={activeTab === 'products' ? 'default' : 'ghost'}
@@ -134,29 +176,24 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
 
       <main className="max-w-7xl mx-auto px-4 py-4 md:py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 md:space-y-6">
-          <div className="md:hidden">
+          <div className="block">
             <NavigationTabs />
-          </div>
-          
-          <div className="hidden md:block">
-            <TabsList className="grid w-full grid-cols-3 max-w-md">
-              <TabsTrigger value="dashboard" className="flex items-center space-x-2">
-                <BarChart3 className="h-4 w-4" />
-                <span>Dashboard</span>
-              </TabsTrigger>
-              <TabsTrigger value="products" className="flex items-center space-x-2">
-                <Package className="h-4 w-4" />
-                <span>Products</span>
-              </TabsTrigger>
-              <TabsTrigger value="reviews" className="flex items-center space-x-2">
-                <MessageSquare className="h-4 w-4" />
-                <span>Reviews</span>
-              </TabsTrigger>
-            </TabsList>
           </div>
 
           <TabsContent value="dashboard">
             <AdminDashboard />
+          </TabsContent>
+
+          <TabsContent value="pos">
+            <POSSystem user={user} />
+          </TabsContent>
+
+          <TabsContent value="inventory">
+            <InventoryManager />
+          </TabsContent>
+
+          <TabsContent value="sales">
+            <SalesHistory />
           </TabsContent>
 
           <TabsContent value="products">

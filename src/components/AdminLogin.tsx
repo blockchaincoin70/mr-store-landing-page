@@ -77,45 +77,50 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold text-slate-900">
+      <Card className="w-full max-w-sm md:max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl md:text-2xl font-bold text-slate-900">
             M.R. Store Admin
           </CardTitle>
+          <p className="text-sm text-slate-600 mt-1">
+            Sign in to your admin account
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Admin Email</Label>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">Admin Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your admin email"
+                className="h-11"
                 required
               />
             </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
+                className="h-11"
                 required
               />
             </div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full h-11 text-base"
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Login to Admin Panel'}
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
-            <div className="text-sm text-center text-slate-600 mt-4">
-              <p>Use your admin account credentials to login</p>
+            <div className="text-xs text-center text-slate-600 mt-4">
+              <p>Use your admin account credentials to access the panel</p>
             </div>
           </form>
         </CardContent>

@@ -138,17 +138,17 @@ const AdminDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-6">
+        <div className="grid gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="h-4 bg-gray-200 rounded w-20"></div>
+                <div className="h-4 bg-gray-200 rounded w-16 md:w-20"></div>
                 <div className="h-4 w-4 bg-gray-200 rounded"></div>
               </CardHeader>
               <CardContent>
-                <div className="h-8 bg-gray-200 rounded w-16 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-24"></div>
+                <div className="h-6 md:h-8 bg-gray-200 rounded w-12 md:w-16 mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-20 md:w-24"></div>
               </CardContent>
             </Card>
           ))}
@@ -158,30 +158,30 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
-          <p className="text-muted-foreground">Monitor your store's performance and activity</p>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard Overview</h2>
+          <p className="text-sm md:text-base text-muted-foreground">Monitor your store's performance and activity</p>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-          <Activity className="h-4 w-4" />
+        <div className="flex items-center space-x-2 text-xs md:text-sm text-muted-foreground">
+          <Activity className="h-3 w-3 md:h-4 md:w-4" />
           <span>Real-time updates</span>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
         <Card className="border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-            <div className="p-2 bg-blue-50 rounded-full">
-              <Eye className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-xs md:text-sm font-medium">Total Views</CardTitle>
+            <div className="p-1.5 md:p-2 bg-blue-50 rounded-full">
+              <Eye className="h-3 w-3 md:h-4 md:w-4 text-blue-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-600">{totalViews.toLocaleString()}</div>
+            <div className="text-xl md:text-3xl font-bold text-blue-600">{totalViews.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground mt-1">
               <TrendingUp className="h-3 w-3 inline mr-1" />
               Real-time website views
@@ -191,69 +191,69 @@ const AdminDashboard = () => {
 
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <div className="p-2 bg-green-50 rounded-full">
-              <Package className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-xs md:text-sm font-medium">Products</CardTitle>
+            <div className="p-1.5 md:p-2 bg-green-50 rounded-full">
+              <Package className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-600">{stats?.totalProducts}</div>
+            <div className="text-xl md:text-3xl font-bold text-green-600">{stats?.totalProducts}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              +{stats?.recentProducts} added this week
+              +{stats?.recentProducts} this week
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-orange-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
-            <div className="p-2 bg-orange-50 rounded-full">
-              <MessageSquare className="h-4 w-4 text-orange-600" />
+            <CardTitle className="text-xs md:text-sm font-medium">Reviews</CardTitle>
+            <div className="p-1.5 md:p-2 bg-orange-50 rounded-full">
+              <MessageSquare className="h-3 w-3 md:h-4 md:w-4 text-orange-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-orange-600">{stats?.totalReviews}</div>
+            <div className="text-xl md:text-3xl font-bold text-orange-600">{stats?.totalReviews}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              +{stats?.recentReviews} added this week
+              +{stats?.recentReviews} this week
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
-            <div className="p-2 bg-purple-50 rounded-full">
-              <Star className="h-4 w-4 text-purple-600" />
+            <CardTitle className="text-xs md:text-sm font-medium">Avg Rating</CardTitle>
+            <div className="p-1.5 md:p-2 bg-purple-50 rounded-full">
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-purple-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-600">{stats?.averageRating}/5</div>
-            <p className="text-xs text-muted-foreground mt-1">Customer satisfaction score</p>
+            <div className="text-xl md:text-3xl font-bold text-purple-600">{stats?.averageRating}/5</div>
+            <p className="text-xs text-muted-foreground mt-1">Customer satisfaction</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Charts Section */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
         {/* Rating Distribution Pie Chart */}
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <Star className="h-4 w-4 md:h-5 md:w-5" />
               Rating Distribution
             </CardTitle>
-            <CardDescription>How customers rate your products</CardDescription>
+            <CardDescription className="text-xs md:text-sm">How customers rate your products</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px]">
+            <ChartContainer config={chartConfig} className="h-[200px] md:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={stats?.ratingDistribution}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={40}
+                    outerRadius={80}
                     paddingAngle={5}
                     dataKey="value"
                   >
@@ -271,14 +271,14 @@ const AdminDashboard = () => {
         {/* Activity Over Time */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <Activity className="h-4 w-4 md:h-5 md:w-5" />
               Weekly Activity
             </CardTitle>
-            <CardDescription>Products and reviews added over the last 7 days</CardDescription>
+            <CardDescription className="text-xs md:text-sm">Products and reviews added over the last 7 days</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px]">
+            <ChartContainer config={chartConfig} className="h-[200px] md:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={stats?.activityData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -289,15 +289,15 @@ const AdminDashboard = () => {
                     type="monotone" 
                     dataKey="products" 
                     stroke="var(--color-products)" 
-                    strokeWidth={3}
-                    dot={{ fill: "var(--color-products)", strokeWidth: 2, r: 4 }}
+                    strokeWidth={2}
+                    dot={{ fill: "var(--color-products)", strokeWidth: 2, r: 3 }}
                   />
                   <Line 
                     type="monotone" 
                     dataKey="reviews" 
                     stroke="var(--color-reviews)" 
-                    strokeWidth={3}
-                    dot={{ fill: "var(--color-reviews)", strokeWidth: 2, r: 4 }}
+                    strokeWidth={2}
+                    dot={{ fill: "var(--color-reviews)", strokeWidth: 2, r: 3 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -307,79 +307,79 @@ const AdminDashboard = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <TrendingUp className="h-4 w-4 md:h-5 md:w-5" />
               Performance Summary
             </CardTitle>
-            <CardDescription>Key metrics at a glance</CardDescription>
+            <CardDescription className="text-xs md:text-sm">Key metrics at a glance</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 rounded-full">
-                  <Eye className="h-4 w-4 text-blue-600" />
+          <CardContent className="space-y-4 md:space-y-6">
+            <div className="flex items-center justify-between p-3 md:p-4 bg-muted/30 rounded-lg">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="p-1.5 md:p-2 bg-blue-100 rounded-full">
+                  <Eye className="h-3 w-3 md:h-4 md:w-4 text-blue-600" />
                 </div>
-                <span className="font-medium">Website Traffic</span>
+                <span className="text-sm md:text-base font-medium">Website Traffic</span>
               </div>
-              <span className="text-lg font-bold text-blue-600">{totalViews.toLocaleString()}</span>
+              <span className="text-base md:text-lg font-bold text-blue-600">{totalViews.toLocaleString()}</span>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-100 rounded-full">
-                  <Package className="h-4 w-4 text-green-600" />
+            <div className="flex items-center justify-between p-3 md:p-4 bg-muted/30 rounded-lg">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="p-1.5 md:p-2 bg-green-100 rounded-full">
+                  <Package className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
                 </div>
-                <span className="font-medium">Product Catalog</span>
+                <span className="text-sm md:text-base font-medium">Product Catalog</span>
               </div>
-              <span className="text-lg font-bold text-green-600">{stats?.totalProducts} items</span>
+              <span className="text-base md:text-lg font-bold text-green-600">{stats?.totalProducts} items</span>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-full">
-                  <Star className="h-4 w-4 text-purple-600" />
+            <div className="flex items-center justify-between p-3 md:p-4 bg-muted/30 rounded-lg">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="p-1.5 md:p-2 bg-purple-100 rounded-full">
+                  <Star className="h-3 w-3 md:h-4 md:w-4 text-purple-600" />
                 </div>
-                <span className="font-medium">Customer Rating</span>
+                <span className="text-sm md:text-base font-medium">Customer Rating</span>
               </div>
-              <span className="text-lg font-bold text-purple-600">{stats?.averageRating}/5</span>
+              <span className="text-base md:text-lg font-bold text-purple-600">{stats?.averageRating}/5</span>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <Users className="h-4 w-4 md:h-5 md:w-5" />
               Recent Activity
             </CardTitle>
-            <CardDescription>What's happening this week</CardDescription>
+            <CardDescription className="text-xs md:text-sm">What's happening this week</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+          <CardContent className="space-y-4 md:space-y-6">
+            <div className="flex items-center justify-between p-3 md:p-4 bg-muted/30 rounded-lg">
               <div>
-                <p className="font-medium">New Products</p>
-                <p className="text-sm text-muted-foreground">Added this week</p>
+                <p className="text-sm md:text-base font-medium">New Products</p>
+                <p className="text-xs text-muted-foreground">Added this week</p>
               </div>
-              <span className="text-2xl font-bold text-green-600">+{stats?.recentProducts}</span>
+              <span className="text-xl md:text-2xl font-bold text-green-600">+{stats?.recentProducts}</span>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+            <div className="flex items-center justify-between p-3 md:p-4 bg-muted/30 rounded-lg">
               <div>
-                <p className="font-medium">New Reviews</p>
-                <p className="text-sm text-muted-foreground">Added this week</p>
+                <p className="text-sm md:text-base font-medium">New Reviews</p>
+                <p className="text-xs text-muted-foreground">Added this week</p>
               </div>
-              <span className="text-2xl font-bold text-orange-600">+{stats?.recentReviews}</span>
+              <span className="text-xl md:text-2xl font-bold text-orange-600">+{stats?.recentReviews}</span>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+            <div className="flex items-center justify-between p-3 md:p-4 bg-muted/30 rounded-lg">
               <div>
-                <p className="font-medium">Total Engagement</p>
-                <p className="text-sm text-muted-foreground">Reviews & products</p>
+                <p className="text-sm md:text-base font-medium">Total Engagement</p>
+                <p className="text-xs text-muted-foreground">Reviews & products</p>
               </div>
-              <span className="text-2xl font-bold text-blue-600">{(stats?.totalReviews || 0) + (stats?.totalProducts || 0)}</span>
+              <span className="text-xl md:text-2xl font-bold text-blue-600">{(stats?.totalReviews || 0) + (stats?.totalProducts || 0)}</span>
             </div>
           </CardContent>
         </Card>

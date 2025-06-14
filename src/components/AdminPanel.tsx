@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Settings, Package, MessageSquare, BarChart3, Menu, ShoppingCart, Warehouse, Receipt, Key } from 'lucide-react';
+import { LogOut, Settings, Package, MessageSquare, BarChart3, Menu, ShoppingCart, Warehouse, Receipt } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import ProductManager from './ProductManager';
 import ReviewManager from './ReviewManager';
@@ -10,7 +10,6 @@ import AdminDashboard from './AdminDashboard';
 import POSSystem from './POSSystem';
 import InventoryManager from './InventoryManager';
 import SalesHistory from './SalesHistory';
-import PasswordChange from './PasswordChange';
 
 interface AdminPanelProps {
   user: any;
@@ -21,7 +20,7 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   const NavigationTabs = () => (
-    <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 h-auto gap-1">
+    <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 h-auto gap-1">
       <TabsTrigger value="dashboard" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
         <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
         <span className="hidden sm:inline">Dashboard</span>
@@ -51,11 +50,6 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
         <MessageSquare className="h-3 w-3 md:h-4 md:w-4" />
         <span className="hidden sm:inline">Reviews</span>
         <span className="sm:hidden">Reviews</span>
-      </TabsTrigger>
-      <TabsTrigger value="password" className="flex flex-col items-center space-y-1 p-2 md:p-3 text-xs">
-        <Key className="h-3 w-3 md:h-4 md:w-4" />
-        <span className="hidden sm:inline">Password</span>
-        <span className="sm:hidden">Pass</span>
       </TabsTrigger>
     </TabsList>
   );
@@ -125,14 +119,6 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
             >
               <MessageSquare className="h-4 w-4 mr-2" />
               Reviews
-            </Button>
-            <Button
-              variant={activeTab === 'password' ? 'default' : 'ghost'}
-              className="w-full justify-start"
-              onClick={() => setActiveTab('password')}
-            >
-              <Key className="h-4 w-4 mr-2" />
-              Change Password
             </Button>
           </nav>
 
@@ -216,10 +202,6 @@ const AdminPanel = ({ user, onLogout }: AdminPanelProps) => {
 
           <TabsContent value="reviews">
             <ReviewManager />
-          </TabsContent>
-
-          <TabsContent value="password">
-            <PasswordChange />
           </TabsContent>
         </Tabs>
       </main>

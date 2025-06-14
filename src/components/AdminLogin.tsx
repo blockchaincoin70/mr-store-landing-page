@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AdminLoginProps {
   onLogin: (user: any) => void;
@@ -20,37 +21,58 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
     e.preventDefault();
     setLoading(true);
 
-    // Hardcoded admin credentials
-    const ADMIN_EMAIL = 'admin@mrstore.com';
-    const ADMIN_PASSWORD = 'admin123';
+    try {
+      // Query the users table for authentication
+      const { data: users, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .eq('role', 'admin');
 
-    // Check credentials directly
-    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+      if (error) {
+        throw error;
+      }
+
+      if (!users || users.length === 0) {
+        toast({
+          title: "Login Failed",
+          description: "Invalid admin credentials or user not found",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const user = users[0];
+      
+      // For now, we'll do a simple password check (in production, use proper hashing)
+      // This is a basic implementation - in real apps, passwords should be hashed
+      if (user.password_hash !== password) {
+        toast({
+          title: "Login Failed",
+          description: "Invalid password",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      toast({
+        title: "Login Successful",
+        description: "Welcome to the admin panel",
+      });
+      
+      onLogin(user);
+    } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Login Failed",
-        description: "Invalid admin credentials",
+        description: "An error occurred during login",
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // Create mock admin user object
-    const adminUser = {
-      id: 'admin-1',
-      email: ADMIN_EMAIL,
-      first_name: 'Admin',
-      last_name: 'User',
-      role: 'admin'
-    };
-
-    toast({
-      title: "Login Successful",
-      description: "Welcome to the admin panel",
-    });
-    
-    onLogin(adminUser);
-    setLoading(false);
   };
 
   return (
@@ -70,7 +92,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@mrstore.com"
+                placeholder="Enter your admin email"
                 required
               />
             </div>
@@ -81,7 +103,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="admin123"
+                placeholder="Enter your password"
                 required
               />
             </div>
@@ -93,9 +115,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
               {loading ? 'Logging in...' : 'Login to Admin Panel'}
             </Button>
             <div className="text-sm text-center text-slate-600 mt-4">
-              <p>Demo Credentials:</p>
-              <p>Email: admin@mrstore.com</p>
-              <p>Password: admin123</p>
+              <p>Use your admin account credentials to login</p>
             </div>
           </form>
         </CardContent>

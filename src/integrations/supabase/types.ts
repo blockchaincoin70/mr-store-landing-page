@@ -119,6 +119,7 @@ export type Database = {
           id: string
           image_url: string | null
           name: string
+          pdf_url: string | null
           tag1: string | null
           tag2: string | null
           tag3: string | null
@@ -130,6 +131,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           name: string
+          pdf_url?: string | null
           tag1?: string | null
           tag2?: string | null
           tag3?: string | null
@@ -141,6 +143,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           name?: string
+          pdf_url?: string | null
           tag1?: string | null
           tag2?: string | null
           tag3?: string | null

@@ -15,6 +15,7 @@ interface Product {
   name: string;
   description: string;
   image_url: string | null;
+  pdf_url: string | null;
   tag1: string | null;
   tag2: string | null;
   tag3: string | null;
@@ -27,6 +28,7 @@ const ProductManager = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedPdf, setSelectedPdf] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const { toast } = useToast();
 
@@ -34,6 +36,7 @@ const ProductManager = () => {
     name: '',
     description: '',
     image_url: '',
+    pdf_url: '',
     tag1: '',
     tag2: '',
     tag3: ''
@@ -150,6 +153,7 @@ const ProductManager = () => {
 
     try {
       let imageUrl = formData.image_url;
+      let pdfUrl = formData.pdf_url;
 
       // Upload new image if selected
       if (selectedFile) {
@@ -166,9 +170,25 @@ const ProductManager = () => {
         }
       }
 
+      // Upload new PDF if selected
+      if (selectedPdf) {
+        const uploadedUrl = await uploadPdf();
+        if (uploadedUrl) {
+          pdfUrl = uploadedUrl;
+          
+          // Delete old PDF if updating a product
+          if (editingProduct && editingProduct.pdf_url) {
+            await deleteOldPdf(editingProduct.pdf_url);
+          }
+        } else {
+          throw new Error('PDF upload failed');
+        }
+      }
+
       const productData = {
         ...formData,
-        image_url: imageUrl
+        image_url: imageUrl,
+        pdf_url: pdfUrl
       };
 
       if (editingProduct) {
@@ -214,12 +234,14 @@ const ProductManager = () => {
       name: product.name,
       description: product.description,
       image_url: product.image_url || '',
+      pdf_url: product.pdf_url || '',
       tag1: product.tag1 || '',
       tag2: product.tag2 || '',
       tag3: product.tag3 || ''
     });
     setPreviewUrl(product.image_url || '');
     setSelectedFile(null);
+    setSelectedPdf(null);
     setIsFormOpen(true);
   };
 
@@ -227,7 +249,7 @@ const ProductManager = () => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      // Find the product to get its image URL
+      // Find the product to get its image and PDF URLs
       const product = products.find(p => p.id === id);
       
       const { error } = await supabase
@@ -240,6 +262,11 @@ const ProductManager = () => {
       // Delete the associated image
       if (product?.image_url) {
         await deleteOldImage(product.image_url);
+      }
+
+      // Delete the associated PDF
+      if (product?.pdf_url) {
+        await deleteOldPdf(product.pdf_url);
       }
 
       toast({
@@ -262,6 +289,7 @@ const ProductManager = () => {
       name: '',
       description: '',
       image_url: '',
+      pdf_url: '',
       tag1: '',
       tag2: '',
       tag3: ''
@@ -269,9 +297,86 @@ const ProductManager = () => {
     setEditingProduct(null);
     setIsFormOpen(false);
     setSelectedFile(null);
+    setSelectedPdf(null);
     setPreviewUrl('');
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
+    }
+  };
+
+  const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (file.type !== 'application/pdf') {
+        toast({
+          title: "Error",
+          description: "Please select a valid PDF file",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "PDF must be less than 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSelectedPdf(file);
+    }
+  };
+
+  const uploadPdf = async (): Promise<string | null> => {
+    if (!selectedPdf) return null;
+
+    setIsUploading(true);
+    try {
+      const fileExt = selectedPdf.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `products/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, selectedPdf);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload PDF",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const deleteOldPdf = async (pdfUrl: string) => {
+    try {
+      // Extract file path from URL
+      const urlParts = pdfUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `products/${fileName}`;
+
+      await supabase.storage
+        .from('product-images')
+        .remove([filePath]);
+    } catch (error) {
+      console.error('Error deleting old PDF:', error);
     }
   };
 
@@ -283,6 +388,13 @@ const ProductManager = () => {
     setPreviewUrl('');
     if (!editingProduct) {
       setFormData({ ...formData, image_url: '' });
+    }
+  };
+
+  const clearPdf = () => {
+    setSelectedPdf(null);
+    if (!editingProduct) {
+      setFormData({ ...formData, pdf_url: '' });
     }
   };
 
@@ -366,6 +478,40 @@ const ProductManager = () => {
                 </div>
               </div>
 
+              <div>
+                <Label>Product PDF</Label>
+                <div className="space-y-4">
+                  {(selectedPdf || formData.pdf_url) && (
+                    <div className="flex items-center space-x-2 p-3 bg-slate-50 rounded-lg border">
+                      <span className="text-sm text-slate-700">
+                        {selectedPdf ? selectedPdf.name : 'PDF attached'}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={clearPdf}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={handlePdfSelect}
+                      className="flex-1"
+                    />
+                    <Upload className="h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Supported format: PDF. Max size: 10MB
+                  </p>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="tag1">Tag 1</Label>
@@ -423,6 +569,7 @@ const ProductManager = () => {
                   <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Description</TableHead>
+                  <TableHead>PDF</TableHead>
                   <TableHead>Tags</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -445,6 +592,20 @@ const ProductManager = () => {
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell className="max-w-xs truncate">{product.description}</TableCell>
+                    <TableCell>
+                      {product.pdf_url ? (
+                        <a 
+                          href={product.pdf_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 text-sm underline"
+                        >
+                          View PDF
+                        </a>
+                      ) : (
+                        <span className="text-slate-400 text-xs">No PDF</span>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {product.tag1 && <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">{product.tag1}</span>}

@@ -24,6 +24,26 @@ const MessageManager = () => {
 
   useEffect(() => {
     fetchMessages();
+
+    // Set up real-time subscription for new messages
+    const channel = supabase
+      .channel('contact-messages-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'contact_messages'
+        },
+        () => {
+          fetchMessages();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchMessages = async () => {
